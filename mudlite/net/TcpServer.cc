@@ -16,6 +16,18 @@ namespace
     }
 }
 
+mudlite::net::TcpServer::~TcpServer()
+{
+    LOG_INFO("TcpServer::~TcpServer [%s] destructing", name_.c_str());
+
+    for(auto& item: connections_)
+    {
+        TcpConnectionPtr conn(item.second);
+        item.second.reset();
+        conn->getLoop()->runInLoop(std::bind(&TcpConnection::connectDestoryed, conn));
+    }
+}
+
 TcpServer::TcpServer(EventLoop *loop,
                      const InetAddr &listenAddr,
                      const std::string &nameArg,
