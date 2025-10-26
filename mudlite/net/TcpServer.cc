@@ -95,7 +95,7 @@ void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn)
     size_t n = connections_.erase(conn->name());
     (void)n;
 
-    EventLoop* ioLoop = conn->loop_();
+    EventLoop* ioLoop = conn->getLoop();
     ioLoop->queueInLoop(std::bind(&TcpConnection::connectDestoryed, conn));
 }
 
@@ -109,7 +109,10 @@ void TcpServer::setThreadNum(int numThreads)
 void TcpServer::start()
 {
     // 防止一个TcpServer对象被started多次
-    if (started_++ == 0)
+    int expected = 0;
+    int newvalue = 1;
+    // TO_THINK: CAS：compare and swap ，否则进不去、就会导致监听不了套接字
+    if (started_.compare_exchange_weak(expected, newvalue))
     {
         // 启动底层的 loop 线程池
         threadPool_->start(threadInitCallback_);

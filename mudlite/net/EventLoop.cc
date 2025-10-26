@@ -163,8 +163,10 @@ bool EventLoop::hasChannel(Channel *channel)
 
 void EventLoop::runInLoop(Functor cb)
 {
+    LOG_INFO("EventLoop::runInLoop -> start");
     if(isInLoopThread())
     {
+        LOG_INFO("EventLoop::runInLoop -> inLoopThread");
         // 如果在自己的线程循环，直接执行
         cb();
     }

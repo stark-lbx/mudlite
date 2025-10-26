@@ -6,6 +6,7 @@
 
 #include "../base/noncopyable.h"
 #include "../base/timestamp.h"
+#include "../base/logger.h" // for test
 
 
 /**

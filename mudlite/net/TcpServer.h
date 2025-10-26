@@ -76,7 +76,7 @@ private:
     WriteCompleteCallback writeCompleteCallback_; // 消息返送完毕之后的回调
     ThreadInitCallback threadInitCallback_; // loop线程初始化时的回调
 
-    std::atomic_int started_; // server是否在运行
+    std::atomic_int started_{0}; // server是否在运行
     int nextConnId_;
     ConnectionMap connections_; // 连接映射表
 };

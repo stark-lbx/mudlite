@@ -21,7 +21,7 @@ public:
     uint16_t toPort() const;
 
     void setSockAddr(const sockaddr_in &addr){addr_ = addr;}
-    const struct sockaddr *getSockAddr() const { return (struct sockaddr*)(&addr_); }
+    const struct sockaddr_in *getSockAddr() const { return &addr_; }
     
 private:
     struct sockaddr_in addr_;

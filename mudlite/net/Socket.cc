@@ -16,11 +16,12 @@ Socket::~Socket()
 
 void Socket::bindAddress(const InetAddr &localaddr)
 {
-    const auto *addr = localaddr.getSockAddr();
-    int ret = ::bind(sockfd_, addr, sizeof(*addr));
+    const struct sockaddr_in addr = *localaddr.getSockAddr();
+    LOG_INFO("Socket::bindAddress[%d]", sockfd_);
+    int ret = ::bind(sockfd_, (struct sockaddr*)&addr, sizeof addr);
     if (ret < 0)
     {
-        LOG_FATAL("bind error");
+        LOG_FATAL("|-> bind error[%d : %s]", errno, strerror(errno));
     }
 }
 void Socket::listen()

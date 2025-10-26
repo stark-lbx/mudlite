@@ -92,10 +92,12 @@ void EPollPoller::fillActiveChannels(int numEvents, ChannelList *activeChannels)
 
 void EPollPoller::updateChannel(Channel *channel)
 {
+    LOG_INFO("EpollPoller::updateChannel -> start");
     // 通过channel修改事件
     int index = channel->index();
     if (index == kNew || index == kDeleted)
     {
+        LOG_INFO("EpollPoller::updateChannel -> new one");
         // a new one, add with EPOLL_CTL_ADD
         int fd = channel->fd();
         if (index == kNew)
@@ -166,4 +168,5 @@ void EPollPoller::update(int operation, Channel *channel)
             LOG_FATAL("epoll_ctl op = EPOLL_CTL_%d, fd=%d", operation, fd);
         }
     }
+    LOG_INFO("EpollPoller::update -> over");
 }

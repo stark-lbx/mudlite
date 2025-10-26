@@ -29,15 +29,16 @@ namespace mudlite
 
     private:
         int logLevel_;
-        Logger();
+        Logger() = default;
     };
+    
 
 // LOG_LEVEL("%s, %d", arg1, arg2, ...)
 #define LOG_INFO(logmsgFormat, ...)                              \
     do                                                           \
     {                                                            \
-        Logger &logger = Logger::instance();                     \
-        logger.setLogLevel(INFO);                                \
+        mudlite::Logger &logger = mudlite::Logger::instance();                     \
+        logger.setLogLevel(mudlite::LogLevel::INFO);                                \
         char buf[1024] = {0};                                    \
         snprintf(buf, sizeof(buf), logmsgFormat, ##__VA_ARGS__); \
         logger.log(buf);                                         \
@@ -46,8 +47,8 @@ namespace mudlite
 #define LOG_ERROR(logmsgFormat, ...)                             \
     do                                                           \
     {                                                            \
-        Logger &logger = Logger::instance();                     \
-        logger.setLogLevel(ERROR);                               \
+        mudlite::Logger &logger = mudlite::Logger::instance();                     \
+        logger.setLogLevel(mudlite::LogLevel::ERROR);                               \
         char buf[1024] = {0};                                    \
         snprintf(buf, sizeof(buf), logmsgFormat, ##__VA_ARGS__); \
         logger.log(buf);                                         \
@@ -56,11 +57,11 @@ namespace mudlite
 #define LOG_FATAL(logmsgFormat, ...)                             \
     do                                                           \
     {                                                            \
-        Logger &logger = Logger::instance();                     \
-        logger.setLogLevel(FATAL);                               \
+        mudlite::Logger &logger = mudlite::Logger::instance();                     \
+        logger.setLogLevel(mudlite::LogLevel::FATAL);                               \
         char buf[1024] = {0};                                    \
         snprintf(buf, sizeof(buf), logmsgFormat, ##__VA_ARGS__); \
-        logger.log(buf);                                         \
+        logger.log(std::string() + __FILE__ + " " + __func__ + " " + std::to_string(__LINE__) + " " + std::string(buf) ); \
         exit(-1);                                                \
     } while (0)
 
@@ -68,8 +69,8 @@ namespace mudlite
 #define LOG_DEBUG(logmsgFormat, ...)                             \
     do                                                           \
     {                                                            \
-        Logger &logger = Logger::instance();                     \
-        logger.setLogLevel(DEBUG);                               \
+        mudlite::Logger &logger = mudlite::Logger::instance();                     \
+        logger.setLogLevel(mudlite::LogLevel::DEBUG);                               \
         char buf[1024] = {0};                                    \
         snprintf(buf, sizeof(buf), logmsgFormat, ##__VA_ARGS__); \
         logger.log(buf);                                         \
