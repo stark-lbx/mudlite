@@ -75,10 +75,16 @@ void TcpServer::newConnection(int sockfd, const InetAddr &peerAddr)
 
 void TcpServer::removeConnection(const TcpConnectionPtr &conn)
 {
+    loop_->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, conn));
 }
 
 void TcpServer::removeConnectionInLoop(const TcpConnectionPtr &conn)
 {
+    size_t n = connections_.erase(conn->name());
+    (void)n;
+
+    EventLoop* ioLoop = conn->loop_();
+    ioLoop->queueInLoop(std::bind(&TcpConnection::connectDestoryed, conn));
 }
 
 // 设置底层subloop的个数
