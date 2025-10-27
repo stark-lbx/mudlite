@@ -37,13 +37,13 @@ int main()
             std::string header = "HTTP/1.1 200 OK\r\n";
             std::string Content_type = "Content-Type: text/plain\r\n";
             std::string content_length = "Content-Length: " + std::to_string(msg.length()) + "\r\n";
-            msg = header + Content_type + content_length + "\r\n" + msg;
+            msg = header + Content_type + content_length + "\r\n" + msg + "\r\n";
 
             conn->send(msg);
         });
 
 
-    server.setThreadNum(5);
+    // server.setThreadNum(5);
 
     server.start();
     loop.loop();

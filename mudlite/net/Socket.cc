@@ -18,7 +18,7 @@ void Socket::bindAddress(const InetAddr &localaddr)
 {
     const struct sockaddr_in addr = *localaddr.getSockAddr();
     LOG_INFO("Socket::bindAddress[%d]", sockfd_);
-    int ret = ::bind(sockfd_, (struct sockaddr*)&addr, sizeof addr);
+    int ret = ::bind(sockfd_, (struct sockaddr *)&addr, sizeof addr);
     if (ret < 0)
     {
         LOG_FATAL("|-> bind error[%d : %s]", errno, strerror(errno));
@@ -39,7 +39,7 @@ int Socket::accept(InetAddr *peeraddr)
     socklen_t socklen = sizeof addr;
     bzero(&addr, sizeof addr);
 
-    int connfd = ::accept(sockfd_, (struct sockaddr*)&addr, &socklen);
+    int connfd = ::accept(sockfd_, (struct sockaddr *)&addr, &socklen);
     if (connfd >= 0)
     {
         if (peeraddr)
@@ -51,8 +51,7 @@ int Socket::accept(InetAddr *peeraddr)
 void Socket::shutdownWrite()
 {
     // 关闭写端
-    int ret = ::shutdown(sockfd_, SHUT_WR);
-    if (ret < 0)
+    if (::shutdown(sockfd_, SHUT_WR) < 0)
     {
         LOG_ERROR("shutdownWrite error");
     }

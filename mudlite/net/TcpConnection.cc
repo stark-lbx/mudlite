@@ -77,7 +77,7 @@ void TcpConnection::handleRead(Timestamp receiveTime)
     }
     else if (n == 0)
     {
-        // 连接断开
+        // 连接断开: EPOLLHUP
         handleClose();
     }
     else
@@ -249,10 +249,11 @@ void TcpConnection::connectDestoryed()
 // 关闭当前连接
 void TcpConnection::shutdown()
 {
-    // compare and swap[CAW]
-    if(state_ == kConnected)
+    // compare and swap[CAS]
+    int excepted = kConnected;
+    int newvalue = kDisconnecting;
+    if(state_.compare_exchange_weak(excepted, newvalue))
     {
-        state_ = kDisconnecting;
         loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
     }
 }
