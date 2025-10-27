@@ -59,7 +59,7 @@ TcpConnection::TcpConnection(EventLoop *loop,
 
 TcpConnection::~TcpConnection()
 {
-    LOG_DEBUG("TcpConnection::dtor[%s] at %p fd= %d\n", name_.c_str(), this, channel_->fd());
+    LOG_INFO("TcpConnection::dtor[%s] at %p fd= %d\n", name_.c_str(), this, channel_->fd());
 }
 
 void TcpConnection::handleRead(Timestamp receiveTime)
@@ -100,7 +100,7 @@ void TcpConnection::handleWrite()
             if (outputBuffer_.readableBytes() == 0)
             {
                 // 发送完了
-                channel_->disableReading();
+                channel_->disableWriting();
                 if (writeCompleteCallback_)
                 {
                     loop_->queueInLoop(
@@ -235,9 +235,10 @@ void TcpConnection::connectEstablished()
 // 连接销毁
 void TcpConnection::connectDestoryed()
 {
-    if(state_ == kConnected)
+    int excepted = kConnected;
+    int newvalue = kDisconnected;
+    if(state_.compare_exchange_weak(excepted, newvalue))
     {
-        state_ = kDisconnected;
         channel_->disableAll();
 
         connectionCallback_(shared_from_this());

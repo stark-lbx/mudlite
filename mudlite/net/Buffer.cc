@@ -1,6 +1,8 @@
 #include "Buffer.h"
+#include "../base/logger.h"
 
 #include <errno.h>
+#include <string.h>
 #include <sys/uio.h> // for readv, writev
 #include <unistd.h> // for write
 #include <sys/types.h>
@@ -27,6 +29,7 @@ ssize_t Buffer::readFd(int fd, int *savedErrno)
     if(n < 0)
     {
         *savedErrno = errno;
+        // LOG_FATAL("%d: %s", errno, ::strerror(errno));
     }
     else if((size_t)n <= writable)
     {
